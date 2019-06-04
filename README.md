@@ -27,7 +27,7 @@ Scripts used for processing recorded data are located in `/processing`. Run `bat
 Other scripts in this folder are used to analyse recorded data.
 
 ### System identification
-Files used for system identification are located in `/systemidentification`. The main workflow to identify new models is as follow.
+Files used for system identification are located in `/systemidentification`. The main workflow to identify new models is as follows.
 
 1. use `batchIdentify` or `CCDInitial` to identify new models using either random initial values, or initial values based on central composite design.
 2. For first order models `FONLIFnc` or `FOPTDNIFnc` are used for identification. `GONLIdentification` is used to identify models of higher order.
