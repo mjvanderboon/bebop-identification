@@ -1,4 +1,4 @@
-%% Input analyse
+%% inputAnalyse
 % Plots time domain and frequency spectrum
 function [] = inputAnalyse(u);
 u = u';

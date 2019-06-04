@@ -1,9 +1,8 @@
 function [valData,simData, fit_score] = simGOFull(model, data)
-%SIMGOFULL simulate full general order identified model over given dataset
+%% simGOFull simulate full general order identified model over given data set
 %   model : model to simulate, if empty, UI opens
 %   data  : dataset to simulate model over, if empty UI opens
 %           data is unshifted. If model has timedelay in userdata it gets added for simulation
-
 
 %% Settings
 kDx = .25;
@@ -11,6 +10,8 @@ kDy = .33;
 kDz = 0;
 modelFile = 'GO_FullModel';
 simBegin = 20; % time step from where to start simulation from state estimation
+        % data from 1 to simBegin is used for kalman state estimation of
+        % non-physical parameters
 
 %% Init
 DefaultDataPath = 'C:\Users\Matthijs\Desktop\BEP\BEP2019\processing\data\rbs';
@@ -49,19 +50,6 @@ Ctheta  = model.Parameters(10).Value;
 Cvz     = model.Parameters(11).Value;
 Cvpsi   = model.Parameters(12).Value;
 
-%% Parameters nikhal found
-% Aphi =[-2.789 -4.978; 9.302 -13.72];
-% Atheta=[-4.301 -2.877; 10.92 -10.37];
-% Avz=[-4.875, 1.848; -6.062, -2.203];
-%  
-% Bphi=[-5.41; -18.04];
-% Btheta=[-0.6893; -16.32];
-% Bvz=[0.6029; 3.681];
-%  
-% Cphi=[1.996; 0.4657];
-% Ctheta=[1.763; 4.586e-3];
-% Cvz=[4.029; -0.7253];
-
 %% Parameters FOPTD
 % Aphi = -1/0.1598;
 % Atheta = -1/0.1621;
@@ -97,7 +85,6 @@ parameters = {Aphi, Atheta, Avz, Avpsi,...
     Cphi, Ctheta, Cvz, Cvpsi, ...
     kDx, kDy, kDz
     };
-
               
 % Kalman state estimation to find initial states of non-physical parameters              
 [estXphi,~] = ssEstEKF(data(1:simBegin,7,1).OutputData, data(1:simBegin,7,1).InputData, Aphi, Bphi, Cphi);

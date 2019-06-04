@@ -1,4 +1,4 @@
-%% ODE Full simulation model
+%% Dynamics describing full simulation model
 function [dx,y] = GO_FullModel(t, x, u, Aphi, Atheta, Avz,Avpsi, ...
     Bphi, Btheta, Bvz,Bvpsi,...
     Cphi, Ctheta, Cvz,Cvpsi,...
@@ -13,13 +13,13 @@ function [dx,y] = GO_FullModel(t, x, u, Aphi, Atheta, Avz,Avpsi, ...
 %     Xtheta1,Xtheta2,...
 %     Xvpsi1,Xvpsi2,....
 %     psi
-% ]'    
-% u = [phi_c, theta_c, vz_c, vpsi_c]
-% y = [xpos;ypos;zpos;vx;vy;vz;phi;theta,psi];
+% ]'
+% u = [phi_c, theta_c, vz_c, vpsi_c]'
+% y = [xpos;ypos;zpos;vx;vy;vz;phi;theta;psi]
 g = 9.81;
 
-% Weird bug in system identification toolbox
-% Param matrices can only be [;;], no [,,] allowed
+% System identification toolbox requires input matrices to be square or row
+% Therefore C matrices are transposed.
 Cphi    = Cphi';
 Ctheta  = Ctheta';
 Cvz     = Cvz';
@@ -31,6 +31,7 @@ Cvpsi   = Cvpsi';
 % (last is psi)
 % order can differ between vz, phi, theta, psi
 
+% selecting indices of non-physical parameters
 ib_vz = 6;
 ie_vz = ib_vz + size(Avz, 1) - 1; %begin + order of model for vz
 
@@ -56,21 +57,22 @@ xtheta  = x(ib_theta:ie_theta);
 xvpsi   = x(ib_vpsi:ie_vpsi);
 
 psi     = x(ie_vpsi + 1); %very last state is psi
+
 %% Input commands
 phi_c   = u(1);
 theta_c = u(2);
 vz_c    = u(3);
 vpsi_c  = u(4);
 
-%% Output from non-physical params
+%% Output from non-physical parameters
 phi     = Cphi*xphi;
 theta   = Ctheta*xtheta;
 vz      = Cvz*xvz;
 vpsi    = Cvpsi*xvpsi;
 
 %% Governing equations of motion
-% Previous error with not using psi and kdz corrected
-% formulaes from Fma.m
+% Below formulaes are found from Fma.m
+% az = d(vz)/dt = d(Cvz*xvz)/dt = Cvz*d(xvz)/dt =Cvz*(Avz*xvz+Bvz*vzc)
 az = Cvz*(Avz*xvz+Bvz*vz_c);
 ax = kDy*sin(psi)*(vy*cos(psi) - vx*sin(psi)) - kDx*cos(psi)*(vx*cos(psi) + vy*sin(psi)) + ((cos(psi)*sin(theta) + cos(theta)*sin(phi)*sin(psi))*(az + g + kDz*vz))/(cos(phi)*cos(theta));
 ay = ((sin(psi)*sin(theta) - cos(psi)*cos(theta)*sin(phi))*(az + g + kDz*vz))/(cos(phi)*cos(theta)) - kDx*sin(psi)*(vx*cos(psi) + vy*sin(psi)) - kDy*cos(psi)*(vy*cos(psi) - vx*sin(psi));

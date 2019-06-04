@@ -1,4 +1,7 @@
-% test of yaw altijd zelfde afwijking is
+%% freqTest
+% Script used for analysing step response of data with input send at
+% different frequencies. Output is a figure overlaying the recorded step
+% response for all data files.
 clear all; clc;
 [t_fileName,t_path]=uigetfile('*.mat','Select the INPUT DATA FILE(s)','MultiSelect','on');
 yaw = zeros(1);

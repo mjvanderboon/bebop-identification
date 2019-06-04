@@ -1,4 +1,5 @@
-%% Plot magnitude of thrust
+%% ThrustMagnitude
+% Plot the magnitude of the thrust over time during experiment
 clear all;
 
 [fileName,path]=uigetfile('*.mat','Select the INPUT DATA FILE','MultiSelect','off');
@@ -19,13 +20,6 @@ T = lowpass(T,.1);
 
 set(0, 'defaultTextInterpreter', 'latex', 'defaultAxesTickLabelInterpreter', 'latex', ...
     'defaultLegendInterpreter', 'latex', 'defaultAxesFontSize', 16)
-inputColor = [1,0,0];
-simColor = [0,0,1];
-valColor = [.7, .7, .7];
-
-inputStyle = '--';
-simStyle = '-';
-valStyle = '-';
 
 figure();
 plot(Time_real(1:length(phi)-1),T);

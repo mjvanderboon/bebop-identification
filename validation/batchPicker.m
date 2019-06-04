@@ -1,5 +1,12 @@
-% Picks best model for data sets
-% Initial params differ between models
+%% batchPicker
+% For every data set multiple models are identified based on different
+% initial parameter values. 
+% This script picks the best performing identified model for each dataset.
+% Running the script opens ui dialogs to select the data sets, and models
+% for each data set.
+% The best models for every data set are returned in the variable
+% bestModels = {data set name; modelname; fit percentage}
+
 %% Setup
 validationFnc = @simGOFull;
 % Default opening directories
@@ -16,7 +23,7 @@ end
 bestModels  = {}; %{dataname; modelname; fit percentage, 
 for i = 1:length(dataNames)    
     fprintf('\n\n[%s Loading data set %s \n', datestr(now,'HH:MM:SS'), dataNames{i});
-    data = createFullDataObject(dataNames{i},dataPath);
+    data = createFullDataObject(dataNames{i},dataPath); % create iddata object from data
     
     [modelNames,modelPath]=uigetfile('*.mat',strcat('Select model files for ',dataNames{i}),modelPath,'Multiselect','on');
         
@@ -35,7 +42,7 @@ for i = 1:length(dataNames)
         allFits{1,j} = fit_score;
         allFits{2,j} = modelNames{j};
 
-        % Save dataset that had best fit
+        % Save dataset that has best fit
         if fit_score > bestFit        
             bestFit = fit_score;
             bestModel = modelNames{j};

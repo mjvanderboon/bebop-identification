@@ -1,7 +1,12 @@
 function [data] = createFullDataObject(dataName,dataPath)
-% Create full iddata object from data file
+%% createFullDataObject create full iddata object from data file
+% dataName, dataPath: file containing data. If [],[] ui dialog is opened to
+%       select data.
+% data contains elements as described in processing/batch.m
+% properties of iddata data:
 % Input = [phi_c, theta_c, vz_c,psi_c]
 % Ouput = [x;y;z;vx;vy;vz;phi;theta;psi]
+% ExperimentName = dataName
 
 %% Loading data
 % If no input, open ui to select one

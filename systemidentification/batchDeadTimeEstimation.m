@@ -1,4 +1,6 @@
-%% Batch identify dead time of all channels
+%% Batch identify dead time of all channels 
+% Estimates dead time for different input channels for selected data.
+% Is used for models containing time delay
 % Settings
 clear all;
 DefaultDataPath = '..\processing\data\step response';

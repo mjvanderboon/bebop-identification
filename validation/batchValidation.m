@@ -1,9 +1,19 @@
-%% Batchvalidation
-% validate multiple models files over data sets
-% returns model that (on average) is best over all datasets
+%% batchValidation
+% Models are validated over data sets that are selected, except for the
+% dataset the particular model was identified on. This script opens ui
+% dialogs to select models to validate and data sets to validate the models
+% over. A struct results is returned containing validation results for all
+% models
+% results:
+%     - model: variable containing greybox model
+%     - modelName: name of model file
+%     - allFits: fit percentages of model over validation data sets
+%     - avgFit: mean(allFits)
+%     - stdFit: std(allFits)
+%     - bestDataset: name of validation data set model fits best on
+%     - bestFit: fit percentage of bestDataset
+
 %% Settings
-validationMode          = 0;    %0 = sim, 1 = predict
-predictionHorizon       = 10;   % prediction horizon to use for prediction
 validationFnc = @simGOFull;
 modelPath = '..\systemidentification\Results\Models';
 dataPath = '..\processing\data\rbs';           
@@ -37,17 +47,17 @@ for i = 1:length(modelNames)
     bestFit = 0;
     bestDataset = '';
     for j=1:length(dataNames) 
-        % Get timestamp of model and data (to see if it is the same data set)
+        % Get timestamp in the name of model and data (to see if it is the same data set)
         modelStamp = getNameTimeStamp(modelNames{i});
         dataStamp = getNameTimeStamp(dataNames(j));
             
-        if ~strcmp(dataStamp, modelStamp) %not over own data set
+        if ~strcmp(dataStamp, modelStamp) %Validation does not occur over own data set
             data = createFullDataObject(dataNames{j},dataPath);
             [val, sim, fit_score] = validationFnc(model,data);                                
             modelResult.allFits(1, j) = dataNames(j);
             modelResult.allFits(2, j) = {fit_score};
 
-            % Save dataset that had best fit, except for model's own data set
+            % Save validation dataset that had best fit
             if (fit_score > bestFit)
                 bestFit = fit_score;
                 bestDataset = dataNames{j};
@@ -65,7 +75,9 @@ end
 resultFileName = char(input('Name for results file: ','s'));
 save(resultFileName, 'results');
 
-function [stamp] = getNameTimeStamp(fullName) % Gets timestamp of fullName
+function [stamp] = getNameTimeStamp(fullName) 
+    % Gets timestamp in the filenames of data and model files
+    % e.g. 2_27_rbs_rbs_rbs_log_09052019_120935_processed --> 120935
         fullName = split(fullName,'_');
         fullName = flipud(fullName);
         stamp = fullName{2};

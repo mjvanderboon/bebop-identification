@@ -1,4 +1,6 @@
-%STEPRESPONSE Resturns estimated bandwith for phi, theta, vz
+%% stepResponse Resturns estimated system bandwith for phi, theta, vz
+% Estimates the bandwidth of pitch, roll and vertical velocities from the
+% step response 10-90% rise time according to the below rule of thumb.
 %   BW[Hz] = 0.35 / rise time [s]
 %   rise time = 10-90% rise time van command
 clc;
@@ -14,7 +16,7 @@ bw_vzs = zeros(1,length(files));
 
 for t_i=1:length(files)
     fileName = files{t_i};
-    dataName = fileName; %omdat in ingelade data soms filename staat
+    dataName = fileName; % because on some occasions loaded data contains faulty filename as variable
     fprintf('[%s Loading data %s%s \n', datestr(now,'HH:MM:SS'), path, fileName);     
     load(fullfile(path,fileName));
 
@@ -24,7 +26,7 @@ for t_i=1:length(files)
     end
     
     measured = [phi,theta,vz];
-    measured = measured(:,:) - measured(1,:); %0 stellen op begin, soms is er wat mis met de calibratie (tov hover) waardoor nooit 90% bereikt wordt. Dit voorkomt dat.
+    measured = measured(:,:) - measured(1,:); %to prevent problems in calibration
     commanded = [phi_c,theta_c,vz_c];
     bw_phi      = 0;
     bw_theta    = 0;

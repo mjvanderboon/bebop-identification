@@ -1,13 +1,15 @@
-%this script creates a matrix with initial sample points. using central
-%composite design. It generates a set of 100 initial samples within the ranges supplied. These samples are run for every dataset (5x) 
-%and every model (2x). So 1000x in total. 
+%% CCDInitial 
+% Runs model identification for first order and first order plus time delay
+% models. Initial parameters values are found from central composite
+% design. It generates a set of 100 initial samples within the ranges 
+% supplied. These samples are run for every dataset (5x) and every model 
+% (2x). So 1000x in total. 
 
 clear all; close all;
 DefaultDataPath = '..\processing\data\rbs';
 Index = 0;
 Function = 1;       %1 = FOPTD BestBuess files verzamelen
-                    %2 = Bestguess files genereren (DUURT LANG)
-
+                    %2 = Bestguess files genereren (long run time)
 switch Function
     case 1
         DefaultDataPath = '/Results/Models';
@@ -25,7 +27,6 @@ switch Function
                             "nlFirstOrderestPTD_rbs_rbs_rbs_log_09052019_122633_processed.mat"]);
                 
         for i = 1:5
-
             [fileName,path]=uigetfile('*.mat','Select the data File',DefaultDataPath);
             load(fullfile(path,fileName));
         

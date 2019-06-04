@@ -1,6 +1,8 @@
 function [] = plotResultAndSave(valData, simData)
-%PLOTRESULTANDSAVE Plots the simulation against the measurements
-%   Takes 2 iddata objects, simulation and measurements
+%% plotResultAndSave Plots the simulation against the measurements
+% Takes 2 iddata objects, simulation and measurements
+% iddata objects are according to convention in createFullDataObject.m
+% val en sim datasets are generated in simGOFull
 
 %% Settings
 inputColor = [1,0,0];
@@ -13,23 +15,22 @@ lineWidth = 1;
 
 saveFigs = 1;          %Save figs generated
 
-% For figures in appendix
-figpos = [0 0 1 1];     %figure position
-figposinput = [0 0 .66 1];     %figure position
+% For figures in appendix (full size)
+figpos = [0 0 1 1];         %figure position
+figposinput = [0 0 .66 1];  %figure position
 fontSize = 18;
-dataCutoff = 1;       %percentage of data to plot
+dataCutoff = 1;             %percentage of data to plot
 
-% For figures in results section
-dataCutoff = .5;       %percentage of data to plot
-figpos = [0 0 .5 1];     %figure position
-figposinput = [0 0 .5 1];     %figure position
+% For figures in results section (smaller size)
+dataCutoff = .5;            %percentage of data to plot
+figpos = [0 0 .5 1];        %figure position
+figposinput = [0 0 .5 1];   %figure position
 fontSize = 18;
 lineWidth = 2;
 
 %% Reading data
 set(0, 'defaultTextInterpreter', 'latex', 'defaultAxesTickLabelInterpreter', 'latex', ...
     'defaultLegendInterpreter', 'latex', 'defaultAxesFontSize', fontSize, 'DefaultLineLineWidth',lineWidth);
-
 
 valData = valData(1:floor(dataCutoff*length(valData.SamplingInstants)),:,:);
 simData = simData(1:floor(dataCutoff*length(simData.SamplingInstants)),:,:);

@@ -1,6 +1,6 @@
 function [ppi, n] = preplannedinput(type) %type, length, amplitude
-
-% Returns ppi vector
+%% preplannedinput
+% Returns preplannedinput (ppi) vector
 % Called initially on construction to generate preplanned input vectors    
 % Amplitude is [-1,1] for SDK to maxangl
 sampleT = .01; %change to average sample time to get inputs of desired frequency

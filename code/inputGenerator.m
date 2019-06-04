@@ -1,8 +1,11 @@
-% Generate signal
-% Upper bandlimit is system bandwidth
-% Lower limit is aan lab limitaties (ruimte)
-% rbs omdat dat het meeste lijkt op uiteindelijke toepassing dus waarschijnlijk ook beste fit voor toepassing
 function [u,n] = inputGenerator(low, high)
+%% inputGenerator
+% Generates and rbs input signal limited to given bandwidth
+% Upper bandlimit is system bandwidth
+% Lower limit is experimentally found from limitations in physical lab space
+% Returns a vector u with generated discrete signal
+
+%% Settinsg
 fs = 20;       % sampling frequency (Hz)
 cutoff = high;  % high cutoff frequency (Hz) - volgt uit system bandwidth van step response
 lowcut = low;    % low cutoff frequency (Hz) - volgt uit lab ruimte limitaties

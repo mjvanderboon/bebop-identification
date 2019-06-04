@@ -8,7 +8,7 @@ B = initParams.B;
 C = initParams.C';
 D = zeros(1,1);
 
-m = idss(A,B,C,D,'Ts',0); %estimating continous time model, like greyest does as well
+m = idss(A,B,C,D,'Ts',0);
 data = data(:,channel,channel);
 [m,x0] = ssest(data,m,opt);
 

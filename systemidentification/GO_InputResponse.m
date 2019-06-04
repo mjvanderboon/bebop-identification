@@ -4,8 +4,10 @@ function [dx,y] = GO_InputResponse(t, x, u, Aphi, Atheta, Avz, Avpsi, Bphi, Bthe
 % x = [xphi1,xphi2,xphi3...,xtheta1,xtheta2,xtheta3...,xvz1,xvz2,xvz3..., xvpsi1,...]'
 % u = [phi_c; theta_c; vz_c,vpsi_c]
 % y = [phi; theta; vz,vpsi]
+% individual order of input channels does not have to be the same
 
-% Output matrices have to be transposed because of toolbox
+% Output matrices have to be transposed because of system identification
+% toolbox limitations
 Cphi    = Cphi';
 Ctheta  = Ctheta';
 Cvz     = Cvz';
@@ -43,7 +45,7 @@ dx = [
     Avpsi*xvpsi + Bvpsi*vpsi_c; ...
 ];
 
-y = [Cphi*xphi; ...    % C matrices have to be transposed for system identification to work ([,,] not allowed)
+y = [Cphi*xphi; ...   
     Ctheta*xtheta;  ...
     Cvz* xvz; ...
     Cvpsi*xvpsi;

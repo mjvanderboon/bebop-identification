@@ -1,3 +1,6 @@
+%% displayResult
+% displays recorded data in single plot
+
 set(0, 'defaultTextInterpreter', 'latex', 'defaultAxesTickLabelInterpreter', 'latex', ...
     'defaultLegendInterpreter', 'latex', 'defaultAxesFontSize', 14)
 

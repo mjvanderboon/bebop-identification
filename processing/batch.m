@@ -8,11 +8,11 @@ clear all;
 %   scaled -1,1   
 % log_QuadStatesReal
 %   [x;y;z;pitch;-roll;yaw]
-%   (m,m,m,rad,rad,rad), gemeten door mocap
+%   (m,m,m,rad,rad,rad), measuerd by mocap
 % log_QuadStatesEstimated
 %   [x;y;z;xdot;ydot;zdot;pitch;-roll;yaw;pitch_dot;roll_dot:yaw_dot]
-%   (m,m,m,m/s,m/s,m/s,rad,rad,rad,rad/s,rad/s,rad/s), uit full state
-%   estimator. Geeft gekke waarden voor hoeken.
+%   (m,m,m,m/s,m/s,m/s,rad,rad,rad,rad/s,rad/s,rad/s), from Kalman full state
+%   estimator.
 % log_QuadStatesEstimatedCov     %pos cov vel cov euler cov
 % log_Time              
 
@@ -33,8 +33,8 @@ clear all;
 
 %% Options
 batch_deyaw         = 1;    %variables prefixed with t_ are not saved
-batch_flipRoll_c    = 0;    %Bij data voor 3 mei moet de rollinput omgedraaid worden
-batch_cut           = 1;    %Cut off landen en starten?
+batch_flipRoll_c    = 0;    %on some data, because of different conventions roll input has to be flipped
+batch_cut           = 1;    %Cut off landing and takeoff
 
 %% Batch
 fprintf('[%s Batching log files with deyaw: %s, flipRoll_c: %s cut: %s \n\n', datestr(now,'HH:MM:SS'), num2str(batch_deyaw), num2str(batch_flipRoll_c,batch_cut));
@@ -60,7 +60,7 @@ for t_i=1:length(t_fileName)
     log_QuadStatesEstimated(7:9,:) = t_dummy;
     
     %lowpass filter    	
-    log_QuadStatesReal = lowpass(log_QuadStatesReal', .1)'; %' omdat lowpass kolommen filtert
+    log_QuadStatesReal = lowpass(log_QuadStatesReal', .1)'; %' Because lowpass filters columns
     log_QuadStatesEstimated = lowpass(log_QuadStatesEstimated', .1)';     
     
     %Cut opstijgen en landen
@@ -68,24 +68,25 @@ for t_i=1:length(t_fileName)
         t_startindex = find(any(log_QuadInputs),1);
         t_endindex = find(any(log_QuadInputs),1,'last');
         prepend = 20;
-                
-        log_QuadInputs          = [zeros(3,prepend).*log_QuadInputs(:,t_startindex-1), log_QuadInputs(:,t_startindex:t_endindex)];
-        log_QuadStatesReal          = [[ones(3,prepend);zeros(3,prepend)].*log_QuadStatesReal(:,t_startindex-1), log_QuadStatesReal(:,t_startindex:t_endindex)];
-        log_QuadStatesEstimated          = [ones(12,prepend).*log_QuadStatesEstimated(:,t_startindex-1), log_QuadStatesEstimated(:,t_startindex:t_endindex)];
-        log_QuadStatesEstimatedCov          = [zeros(27,prepend).*log_QuadStatesEstimatedCov(:,t_startindex-1), log_QuadStatesEstimatedCov(:,t_startindex:t_endindex)];
+
+          % Prepending states, used for kalman state estimation
+%         log_QuadInputs          = [zeros(3,prepend).*log_QuadInputs(:,t_startindex-1), log_QuadInputs(:,t_startindex:t_endindex)];
+%         log_QuadStatesReal          = [[ones(3,prepend);zeros(3,prepend)].*log_QuadStatesReal(:,t_startindex-1), log_QuadStatesReal(:,t_startindex:t_endindex)];
+%         log_QuadStatesEstimated          = [ones(12,prepend).*log_QuadStatesEstimated(:,t_startindex-1), log_QuadStatesEstimated(:,t_startindex:t_endindex)];
+%         log_QuadStatesEstimatedCov          = [zeros(27,prepend).*log_QuadStatesEstimatedCov(:,t_startindex-1), log_QuadStatesEstimatedCov(:,t_startindex:t_endindex)];
             
-%         log_QuadInputs          = [log_QuadInputs(:,t_startindex), log_QuadInputs(:,t_startindex:t_endindex)];
-%         log_QuadStatesReal      = log_QuadStatesReal(:,t_startindex:t_endindex);
-%         log_QuadStatesEstimated = log_QuadStatesEstimated(:,t_startindex:t_endindex);
-%         log_QuadStatesEstimatedCov=log_QuadStatesEstimatedCov(:,t_startindex:t_endindex);
-%         log_Time                = log_Time(:,t_startindex:t_endindex);
+        log_QuadInputs          = [log_QuadInputs(:,t_startindex), log_QuadInputs(:,t_startindex:t_endindex)];
+        log_QuadStatesReal      = log_QuadStatesReal(:,t_startindex:t_endindex);
+        log_QuadStatesEstimated = log_QuadStatesEstimated(:,t_startindex:t_endindex);
+        log_QuadStatesEstimatedCov=log_QuadStatesEstimatedCov(:,t_startindex:t_endindex);
+        log_Time                = log_Time(:,t_startindex:t_endindex);
     end
 
-    %0 stellen op begin
+    %set position 0 at beginning
     log_QuadStatesReal(1:3,:) = log_QuadStatesReal(1:3,:) - log_QuadStatesReal(1:3,1);
     log_QuadStatesEstimated(1:3,:) = log_QuadStatesEstimated(1:3,:) - log_QuadStatesEstimated(1:3,1);
            
-    %Variabelen klaarzetten voor system identification
+    %Variables for system identification
     x       = log_QuadStatesReal(1,:)';
     y       = log_QuadStatesReal(2,:)';
     z       = log_QuadStatesReal(3,:)';
@@ -120,17 +121,12 @@ for t_i=1:length(t_fileName)
             vx(t_j)= t_vel(1);
             vy(t_j)= t_vel(2);
             vz(t_j)= t_vel(3);
-        
-            %Roll en pitch wordt in body frame gemeten dus hoeft niet
-            %Check dit nog een keer, ook, worden
-            %teruggedraaid te worden.
-            %theta(t_j)  = t_angles(1);
-            %phi(t_j)    = t_angles(2);
+            
             psi(t_j)    = 0;
         end 
     end
     
-    %Variabelen klaarzetten voor system identification
+    %Variables for system identification
     log_QuadStatesReal(1,:)     = x';
     log_QuadStatesReal(2,:)     = y';
     log_QuadStatesReal(3,:)     = z';

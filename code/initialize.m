@@ -4,23 +4,19 @@
 %% setup path
 setPath; %%add all folders for matlab
 
-
 %% setup ROS
 setROS;
-
 
 %% global variables needed
 global pr                       % global physical parameters
 global index                    % global index for the problem
 global cfg                      % global configurations
 
-
 %% common indexing
 % Relates the quadID and obsID from MATLAB to the IDs set in ROS, should be
 % consistent with the ID set in Mocap
 mapping             =   [3,4,1,2,5,6];
 mapping_obs         =   [1,2,3,4,5,6];
-
 
 %% common MATLAB and configuration setup
 %%% Get new FORCES solver from web

@@ -1,4 +1,9 @@
-% test of yaw altijd zelfde afwijking is
+%% yawDrift
+% Plots yaw data for multiple experiments.
+% The plot is used to analysed the randomness of the yaw drift during
+% experiments. WARNING: most data in /processing is already deyawed, so the
+% recorded yaw for those data sets is 0. Data in /logs contains original
+% data.
 clear all; clc;
 [t_fileName,t_path]=uigetfile('*.mat','Select the INPUT DATA FILE(s)','MultiSelect','on');
 yaw = zeros(1);
