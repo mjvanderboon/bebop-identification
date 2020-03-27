@@ -18,7 +18,7 @@ A special thank you is extended to [H. Zhu](https://github.com/hai-zhu) for prov
 ## Usage
 
 ### Data recording
-Files used for recording experiment data are located in `/data`. A guide for experiment setup in the DCSC lab can be found [here](https://docs.google.com/document/d/1Ap_kQQK0nCGyiXhGXnmifd_kB4u8_QHbuX7kWRNe9YM/edit). A troubleshoot document is online [here](www.example.com). Running `run_main` starts an experiment. Run `save_log` to save all recorded data after an experiment.
+Files used for recording experiment data are located in `/data`. A guide for experiment setup in the DCSC lab is available from the supervisors. A troubleshoot document is online [here](www.example.com). Running `run_main` starts an experiment. Run `save_log` to save all recorded data after an experiment.
 
 Roll, pitch and vertical velocity input vectors can be set in `modules/CDrone` by setting object properties `m_ppi_phi`, `m_ppi_theta`, and `m_ppi_vz`.
 
